@@ -10,6 +10,7 @@
 
 #include <fstream>
 #include <string>
+#include <ctime>
 
 namespace LedControl {
 
@@ -25,6 +26,7 @@ public:
 	FRIEND_TEST(LoggerTest, should_create_file_in_default_path);
 	FRIEND_TEST(LoggerTest, should_create_file_in_given_path);
 	FRIEND_TEST(LoggerTest, should_open_file_with_saving_previous_data);
+	FRIEND_TEST(LoggerTest, should_add_current_date_before_message);
 #endif
 
 	/*
@@ -37,11 +39,26 @@ public:
 	static Logger* initialize( const std::string& pathToFile = "" );
 
 
+	/*
+	 * добавить сообщение в лог
+	*/
+	template <class T> Logger& operator<<(const T& message){
+		time_t currentTime;
+		struct tm *timeinfo;
+		std::time(&currentTime);
+		timeinfo = std::localtime(&currentTime);
+		char strTime[100];
+		std::strftime(strTime, 100, "%m-%d-%y %R", timeinfo);
+		logFile_ << '[' << strTime << "] " << message << "\n";
+		return *this;
+	}
+
 private:
 	Logger (const std::string& pathToLogFile);
 
 	std::ofstream logFile_;
 };//end of declaration class Logger
+
 
 } /* LedControl */ 
 

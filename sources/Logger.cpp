@@ -8,7 +8,6 @@ Logger::Logger(const std::string& pathToLogFile) {
 	} else {
 		logFile_.open(pathToLogFile, std::ofstream::out | std::ofstream::app);
 	}//end of if
-
 }//end of Logger::Logger()
 
 Logger* Logger::initialize(const std::string& pathToLogFile) {
