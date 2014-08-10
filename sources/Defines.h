@@ -1,29 +1,6 @@
 #ifndef DEFINES_H_
 #define DEFINES_H_
 
-#include <string>
-#include <cstring>
-
-#ifdef __LED_CONTROL_DEBUG__
-#include <iostream>
-#include <fstream>
-#include <list>
-#include <map>
-#include <vector>
-#include <deque>
-#include <set>
-#include <algorithm>
-#include <iterator>
-#include <stack>
-#include <cassert>
-#endif
-
-#ifdef __LED_CONTROL_DEBUG__
-#include <cstdio>
-#include <cstdlib>
-#include <ctime>
-#endif
-
 #ifdef __LED_CONTROL_TEST__
 #include "gtest/gtest_prod.h"
 #endif
