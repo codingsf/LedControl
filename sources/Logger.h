@@ -23,6 +23,7 @@ public:
 #ifdef __LED_CONTROL_TEST__
 	friend class LoggerTest;
 	FRIEND_TEST(LoggerTest, should_create_file_in_default_path);
+	FRIEND_TEST(LoggerTest, should_create_file_in_given_path);
 #endif
 
 	/*
