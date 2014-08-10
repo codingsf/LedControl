@@ -29,6 +29,11 @@ public:
 	FRIEND_TEST(LoggerTest, should_add_current_date_before_message);
 #endif
 
+	Logger(const Logger&) = delete;
+	Logger& operator=(const Logger&) = delete;
+	Logger(Logger&&) = delete;
+	Logger& operator=(Logger&&) = delete;
+
 	/*
 	 * инициализировать лог.
 	 * Принимаемые параметры:
