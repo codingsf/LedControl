@@ -56,18 +56,11 @@ TEST_F(LoggerTest, should_open_file_with_saving_previous_data){
 	std::remove("/tmp/log.txt");
 }
 
-TEST_F(LoggerTest, should_add_current_date_before_message){
-	std::string standardMessage;
+TEST_F(LoggerTest, should_add_new_message_in_log){
+	std::string standardMessage = "test";
 	{
-		Logger* logger = new Logger( "/tmp/log.txt");
-		time_t t;
-		struct tm *timeinfo;
-		std::time(&t);
-		timeinfo = std::localtime(&t);
-		char strTime[100];
-		std::strftime(strTime, 100, "%m-%d-%y %R", timeinfo);
-		standardMessage = std::string("[") + std::string(strTime) + std::string("] test");
-		*logger << "test";
+		Logger* logger = new Logger("/tmp/log.txt");
+		logger->addMessage(standardMessage);
 		delete logger;
 	}
 
@@ -80,6 +73,31 @@ TEST_F(LoggerTest, should_add_current_date_before_message){
 	in.close();
 	std::remove("/tmp/log.txt");
 }
+
+//TEST_F(LoggerTest, should_add_current_date_before_message){
+	//std::string standardMessage;
+	//{
+		//Logger* logger = new Logger( "/tmp/log.txt");
+		//time_t t;
+		//struct tm *timeinfo;
+		//std::time(&t);
+		//timeinfo = std::localtime(&t);
+		//char strTime[100];
+		//std::strftime(strTime, 100, "%m-%d-%y %R", timeinfo);
+		//standardMessage = std::string("[") + std::string(strTime) + std::string("] test");
+		//*logger << "test";
+		//delete logger;
+	//}
+
+	//std::string testString;
+	//std::ifstream in("/tmp/log.txt");
+	//std::getline(in, testString);
+
+	//EXPECT_STREQ(standardMessage.c_str(), testString.c_str());
+
+	//in.close();
+	//std::remove("/tmp/log.txt");
+//}
 
 } /* LedControl */ 
 
