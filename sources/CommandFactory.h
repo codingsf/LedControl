@@ -7,9 +7,12 @@
 
 #include "Command.h"
 #include "Driver.h"
-#include "Exception.h"
+#include "Logger.h"
 
 #include <map>
+#include <fstream>
+
+#include <dlfcn.h>
 
 namespace LedControl {
 
@@ -32,7 +35,12 @@ class CommandFactory {
 */
 
 public:
-	explicit CommandFactory (Driver* reciver);
+#ifdef __LED_CONTROL_TEST__
+	friend class CommandFactoryTest;
+	FRIEND_TEST(CommandFactoryTest, should_fill_command_list);
+#endif
+
+	explicit CommandFactory (const std::string& pathToConfigFile, Driver* reciver, Logger* log);
 	~CommandFactory ();
 
 	/*
@@ -45,8 +53,13 @@ public:
 	*/
 	Command* create(const std::string& identifier) const;
 private:
+	static const std::string CREATE_FUNC_NAME; //имя функции, создающей объект класса конкретной команды
 	Driver* reciver_;
+	Logger* log_;
 	std::map<std::string, Command*> commandList_;
+	std::vector<void*> handles_;
+
+	void getDataFromConfigFile(std::ifstream& config);
 };//end of declaration class CommandFactory
 
 } /* LedControl */ 
