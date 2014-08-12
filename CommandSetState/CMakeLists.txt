@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 2.8) #проверка версии cmake
 
-set(PROJECT set_command) #присваиваем переменной PROJECT значение AwesomeLibrary
+set(PROJECT command_set_state) #присваиваем переменной PROJECT значение AwesomeLibrary
 project(${PROJECT})
 
 macro(add_app_executable BUILD_TYPE) #макрос, выполняющий сборку с необходимыми параметрами в зависимости от значения входной переменной
