@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 2.8) #проверка версии cmake
 
 set(PROJECT led_control) #присваиваем переменной PROJECT значение AwesomeLibrary
-project(${PROJECT})
+project(${PROJECT} CXX)
 
 macro(add_app_executable BUILD_TYPE) #макрос, выполняющий сборку с необходимыми параметрами в зависимости от значения входной переменной
 	if (${BUILD_TYPE} STREQUAL "release")#если значение входной переменной равно Debug, то
@@ -33,7 +33,7 @@ macro(add_app_executable BUILD_TYPE) #макрос, выполняющий сб�
 		link_directories("/usr/lib")
 		add_executable(${PROJECT}_test ${SOURCES_TEST}) #создаем динамическую библиотеку
 		set_target_properties(${PROJECT}_test PROPERTIES COMPILE_FLAGS "-O2 -std=c++11 -pedantic -Wall -Wextra -D__LED_CONTROL_TEST__")#задаем ключи компилятора и макросы для цели ${PROJECT}
-		target_link_libraries(${PROJECT}_test libgtest.a libgtest_main.a pthread dl)
+		#target_link_libraries(${PROJECT}_test gtest gtest_main pthread general ${CMAKE_DL_LIBS})
 		add_custom_command(TARGET ${PROJECT}_test POST_BUILD
 			COMMAND ${CMAKE_COMMAND} -E make_directory ../${BUILD_TYPE}
 			COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:${PROJECT}_test> ../${BUILD_TYPE}
@@ -48,7 +48,7 @@ macro(add_app_executable BUILD_TYPE) #макрос, выполняющий сб�
 		link_directories("/usr/lib")
 		add_executable(${PROJECT}_debug_test ${SOURCES_TEST}) #создаем динамическую библиотеку
 		set_target_properties(${PROJECT}_debug_test PROPERTIES COMPILE_FLAGS "-O0 -g3 -std=c++11 -pedantic -Wall -Wextra -D__LED_CONTROL_DEBUG__ -D__LED_CONTROL_TEST__")#задаем ключи компилятора и макросы для цели ${PROJECT}
-		target_link_libraries(${PROJECT}_debug_test libgtest.a libgtest_main.a pthread dl)
+		target_link_libraries(${PROJECT}_debug_test gtest gtest_main pthread general ${CMAKE_DL_LIBS}) 
 		add_custom_command(TARGET ${PROJECT}_debug_test POST_BUILD
 			COMMAND ${CMAKE_COMMAND} -E make_directory ../${BUILD_TYPE}
 			COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:${PROJECT}_debug_test> ../${BUILD_TYPE}
@@ -66,5 +66,5 @@ macro(run_test TEST_TARGET)
 	add_dependencies(test ${TEST_TARGET}_run_test)
 endmacro()
 
+#add_app_executable("release_test")
 add_app_executable("debug_test")
-add_app_executable("release_test")
