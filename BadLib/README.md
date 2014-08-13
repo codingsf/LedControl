@@ -1,0 +1,1 @@
+намеренно испорченная библиотека. Нужна в целях тестирования. Используется в тесте should_throw_exception_if_lib_doesnt_have_func_create для класса CommandFactory
