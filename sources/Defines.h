@@ -12,22 +12,40 @@
 #endif
 
 #ifdef __LED_CONTROL_DEBUG__
-#define PRINTSEQ(seq, size, out) {\
-out << "------------------------------\n"; \
-out << "file: " << __FILE__ << ", str. " << __LINE__ << ":" << #seq << ":" << "\n"; \
-for(size_t i = 0; i < (size); ++i){ \
-out << "el #" << i << ": " << seq[i] << "\n"; \
-} \
-out << "------------------------------\n"; \
+#define PRINTSEQ(log, seq, size) {\
+	log->addMessage("------------------------------", Logger::ADD_TIME | Logger::ADD_LN) \
+	log->addMessage("file: ", Logger::ADD_TIME); \
+	log->addMessage(__FILE__); \
+	log->addMessage(", str. "); \
+	log->addMessage(__LINE__); \
+	log->addMessage(": "); \
+	log->addMessage(#seq); \
+	log->addMessage(":", Logger::ADD_LN); \
+	for(size_t i = 0; i < (size); ++i){ \
+		log->addMessage("el #"); \
+		log->addMessage(i); \
+		log->addMessage(": "); \
+		log->addMessage(seq[i], Logger::ADD_LN); \
+	log->addMessage("------------------------------", ADD_TIME) \
+	} \
 }
 #else
-#define PRINTSEQ(seq, size, out)
+#define PRINTSEQ(log, seq, size)
 #endif
 
 #ifdef __LED_CONTROL_DEBUG__
-#define PRINTVAL(val, out) {out << "file: " << __FILE__ << ", str. " << __LINE__ << ": " << #val << " - " << val << "\n";}
+#define PRINTVAL(log, val) {\
+	log->addMessage("file: ", Logger::ADD_TIME); \
+	log->addMessage(__FILE__); \
+	log->addMessage(", str. "); \
+	log->addMessage(__LINE__); \
+	log->addMessage(": "); \
+	log->addMessage(#val); \
+	log->addMessage(" - "); \
+	log->addMessage(val, Logger::ADD_LN); \
+}
 #else
-#define PRINTVAL(val, out)
+#define PRINTVAL(log, val)
 #endif
 
 #endif /* end of include guard: DEFINES_H_ */
