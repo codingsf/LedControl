@@ -45,19 +45,19 @@ void CommandFactory::getDataFromConfigFile(std::ifstream& config) {
 		}//end of if 
 
 		if ( commandName.empty() || pathToLib.empty() ) {
-			throw Exception("invalid config file");
+			throw Exception("invalid config file: data is not complete");
 		}//end of if 
 
 		void* libHandle = dlopen(pathToLib.c_str(), RTLD_LAZY);
 		if ( libHandle == 0 ) {
-			throw Exception("invalid config file");
+			throw Exception("invalid config file: " + std::string(dlerror()));
 		}//end of if 
 
 		Command* (*createFunc) () = reinterpret_cast<Command* (*) ()>(dlsym(libHandle, CREATE_FUNC_NAME.c_str()));
 
-		//if ( createFunc == 0 ) {
-			//throw Exception ("invalid config file or lib");
-		//}//end of if 
+		if ( createFunc == 0 ) {
+			throw Exception ("invalid config file or lib");
+		}//end of if 
 
 		Command* command = (*createFunc)();
 

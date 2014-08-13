@@ -47,6 +47,12 @@ TEST_F(CommandFactoryTest, should_throw_exception_if_config_has_bad_path_to_lib)
 	EXPECT_THROW(CommandFactory c("./tests_support/test3.conf", &driver, log), Exception);
 }
 
+TEST_F(CommandFactoryTest, should_throw_exception_if_lib_doesnt_have_func_create){
+	Driver driver;
+	Logger* log = Logger::initialize();
+	EXPECT_THROW(CommandFactory c("./tests_support/test4.conf", &driver, log), Exception);
+}
+
 } /* LedControl */ 
 
 #endif /* end of include guard: LED_CONTROL_COMMAND_FACTORY_TEST_H_ */
