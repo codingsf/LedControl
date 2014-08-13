@@ -7,7 +7,7 @@ macro(add_app_executable BUILD_TYPE) #макрос, выполняющий сб�
 	if (${BUILD_TYPE} STREQUAL "release")#если значение входной переменной равно Debug, то
 		include_directories("../sources") 
 		aux_source_directory("./sources" SOURCES)#задаем папки в которых хранятся исходники
-		add_library(${PROJECT} SHARED ${SOURCES}) #создаем динамическую библиотеку
+		add_library(${PROJECT} MODULE ${SOURCES}) #создаем динамическую библиотеку
 		set_target_properties(${PROJECT} PROPERTIES COMPILE_FLAGS "-O2 -std=c++11 -pedantic -Wall -Wextra -DNEBUG")#задаем ключи компилятора и макросы для цели ${PROJECT}
 		add_custom_command(TARGET ${PROJECT} POST_BUILD
 			COMMAND ${CMAKE_COMMAND} -E make_directory ../${BUILD_TYPE}
