@@ -18,9 +18,14 @@ public:
 };//end of declaration class LoggerTest: public ::testing::Test
 
 TEST_F(LoggerTest, should_create_file_in_default_path){
+	//если файл существует, предварительно удалим его
+	struct stat sb;
+	if(stat("./led_control_log.txt", &sb) == 0){
+		std::remove("./led_control_log.txt");
+	}
+
 	{
 		Logger logger( "" );
-		struct stat sb;
 		EXPECT_TRUE(stat("./led_control_log.txt", &sb) == 0);
 	}
 
