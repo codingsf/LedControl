@@ -20,4 +20,8 @@ private:
 	LedControl::Driver* reciver_;
 };//end of declaration class CommandSetState: public Command
 
+extern "C" LedControl::Command* create(LedControl::Driver* reciver){
+	return new CommandSetState(reciver);
+}
+
 #endif /* end of include guard: LED_CONTROL_COMMAND_SET_STATE_H_ */

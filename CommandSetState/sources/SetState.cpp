@@ -21,8 +21,3 @@ bool CommandSetState::excute(const std::vector<std::string>& arguments) {
 
 	return reciver_->setState(arguments[0]);
 }
-
-
-//extern "C" Command* create(LedControl::Driver* reciver) {
-	//return new CommandSetState(reciver);
-//}//end of Command* create()

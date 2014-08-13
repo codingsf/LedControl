@@ -1,7 +1,5 @@
 #include "CommandFactory.h"
 
-#include <iostream>
-
 namespace LedControl {
 
 const std::string CommandFactory::CREATE_FUNC_NAME = "create";
@@ -12,7 +10,7 @@ CommandFactory::CommandFactory(const std::string& pathToConfigFile, Driver* reci
 		throw Exception(Exception::getSystemErrorMessage());
 	}//end of if 
 
-	//getDataFromConfigFile(config);
+	getDataFromConfigFile(config);
 }//end of CommandFactory::CommandFactory()
 
 CommandFactory::~CommandFactory() {
@@ -24,7 +22,7 @@ CommandFactory::~CommandFactory() {
 	}//end of for
 
 	for (size_t i = 0; i < handles_.size(); ++i) {
-		::dlclose(handles_[i]);
+		dlclose(handles_[i]);
 	}//end of for
 
 }//end of  CommandFactory::~CommandFactory()
@@ -42,30 +40,29 @@ void CommandFactory::getDataFromConfigFile(std::ifstream& config) {
 		std::getline(config, pathToLib);
 
 		if ( DGetDataFromConfigFile_ ) {
-			PRINTVAL(commandName, *log_)
-			PRINTVAL(pathToLib, *log_)
+			PRINTVAL(log_, commandName)
+			PRINTVAL(log_, pathToLib)
 		}//end of if 
 
 		//if ( commandName.empty() || pathToLib.empty() ) {
 			//throw Exception("invalid config file");
 		//}//end of if 
 
-		//void* libHandle = dlopen(pathToLib.c_str(), RTLD_LAZY);
-
+		void* libHandle = dlopen(pathToLib.c_str(), RTLD_LAZY);
 		//if ( libHandle == 0 ) {
 			//throw Exception("invalid config file");
 		//}//end of if 
 
-		//Command* (*createFunc) () = reinterpret_cast<Command* (*) ()>(dlsym(libHandle, CREATE_FUNC_NAME.c_str()));
+		Command* (*createFunc) () = reinterpret_cast<Command* (*) ()>(dlsym(libHandle, CREATE_FUNC_NAME.c_str()));
 
 		//if ( createFunc == 0 ) {
 			//throw Exception ("invalid config file or lib");
 		//}//end of if 
 
-		//Command* command = (*createFunc)();
+		Command* command = (*createFunc)();
 
-		//commandList_.insert(std::pair<std::string, Command*>(commandName,command));
-		//handles_.push_back(libHandle);
+		commandList_.insert(std::pair<std::string, Command*>(commandName,command));
+		handles_.push_back(libHandle);
 	}//end of while
 }//end of void CommandFactory::getDataFromConfigFile()
 
