@@ -40,6 +40,13 @@ public:
 	FRIEND_TEST(CommandFactoryTest, should_fill_command_list);
 #endif
 
+	/*
+	 * Принимаемые параметры:
+	 * - pathToConfigFile - путь к конфигурационному файлу
+	 * - reciver - получатель команд
+	 * - log
+	 * Примечание: возможна генерация исключений типа LedControl::Exception
+	 */
 	explicit CommandFactory (const std::string& pathToConfigFile, Driver* reciver, Logger* log);
 	~CommandFactory ();
 
@@ -54,11 +61,18 @@ public:
 	Command* create(const std::string& identifier) const;
 private:
 	static const std::string CREATE_FUNC_NAME; //имя функции, создающей объект класса конкретной команды
-	Driver* reciver_;
+	Driver* reciver_; //получатель команд
 	Logger* log_;
 	std::map<std::string, Command*> commandList_;
-	std::vector<void*> handles_;
+	std::vector<void*> handles_; //дескрипторы открытых библиотек
 
+	/*
+	 * получить данные из конфигурационного файла
+	 * Принимаемые параметры:
+	 * config - поток вывода из конфигурационного файла.
+	 * Примечания:
+	 * функция может генерировать исключения типа LedControl::Exception
+	 */
 	void getDataFromConfigFile(std::ifstream& config);
 };//end of declaration class CommandFactory
 

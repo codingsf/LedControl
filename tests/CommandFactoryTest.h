@@ -53,6 +53,20 @@ TEST_F(CommandFactoryTest, should_throw_exception_if_lib_doesnt_have_func_create
 	EXPECT_THROW(CommandFactory c("./tests_support/test4.conf", &driver, log), Exception);
 }
 
+TEST_F(CommandFactoryTest, should_return_pointer_on_concrete_command_object){
+	Driver driver;
+	Logger* log = Logger::initialize();
+	CommandFactory c("./tests_support/test1.conf", &driver, log);
+
+	Command* cm = c.create("set-state");
+	EXPECT_TRUE(cm != 0);
+
+	cm = c.create("bad-identifier");
+	EXPECT_TRUE(cm == 0);
+
+
+}
+
 } /* LedControl */ 
 
 #endif /* end of include guard: LED_CONTROL_COMMAND_FACTORY_TEST_H_ */

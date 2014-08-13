@@ -27,6 +27,15 @@ CommandFactory::~CommandFactory() {
 
 }//end of  CommandFactory::~CommandFactory()
 
+Command* CommandFactory::create(const std::string& identifier) const {
+	auto it = commandList_.find(identifier);
+	if ( commandList_.find(identifier) != commandList_.end() ) {
+		return it->second;
+	}//end of if 
+
+	return 0;
+}//end of Command* CommandFactory::create()
+
 void CommandFactory::getDataFromConfigFile(std::ifstream& config) {
 #ifdef __LED_CONTROL_DEBUG__
 #define DGetDataFromConfigFile_ 1
