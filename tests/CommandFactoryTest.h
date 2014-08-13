@@ -35,10 +35,16 @@ TEST_F(CommandFactoryTest, should_fill_command_list){
 	EXPECT_TRUE(c.handles_.size() == 1);
 }
 
-TEST_F(CommandFactoryTest, should_throw_exception_if_config_has_bad_path_to_lib){
+TEST_F(CommandFactoryTest, should_throw_exception_if_data_not_complete){
 	Driver driver;
 	Logger* log = Logger::initialize();
 	EXPECT_THROW(CommandFactory c("./tests_support/test2.conf", &driver, log), Exception);
+}
+
+TEST_F(CommandFactoryTest, should_throw_exception_if_config_has_bad_path_to_lib){
+	Driver driver;
+	Logger* log = Logger::initialize();
+	EXPECT_THROW(CommandFactory c("./tests_support/test3.conf", &driver, log), Exception);
 }
 
 } /* LedControl */ 
