@@ -33,7 +33,7 @@ Command* CommandFactory::create(const std::string& identifier) const {
 		return it->second;
 	}//end of if 
 
-	return 0;
+	return nullptr;
 }//end of Command* CommandFactory::create()
 
 void CommandFactory::getDataFromConfigFile(std::ifstream& config) {

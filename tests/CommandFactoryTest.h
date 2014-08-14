@@ -59,10 +59,10 @@ TEST_F(CommandFactoryTest, should_return_pointer_on_concrete_command_object){
 	CommandFactory c("./tests_support/test1.conf", &driver, log);
 
 	Command* cm = c.create("set-state");
-	EXPECT_TRUE(cm != 0);
+	EXPECT_TRUE(cm != nullptr);
 
 	cm = c.create("bad-identifier");
-	EXPECT_TRUE(cm == 0);
+	EXPECT_TRUE(cm == nullptr);
 
 
 }
