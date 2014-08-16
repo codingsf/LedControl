@@ -16,7 +16,32 @@ class Command {
 */
 public:
 	virtual ~Command (){}
-	virtual bool excute(const std::vector<std::string>& arguments) = 0;
+
+	/*
+	 * установить новый ID клиента 
+	 * Принимаемые парамеры:
+	 * newClientId - ID нового клиента
+	 */
+	virtual void setClientId(const std::string& newClientId) = 0;
+
+	/*
+	 * получить ID клиента
+	 */
+	virtual const std::string& getClientId() const = 0;
+
+	/*
+	 * установить аргументы
+	 */
+	virtual void setArguments(const std::vector<std::string>& newArguments) = 0;
+
+	/*
+	 * выполнить команду
+	 * Принимаемые параметры:
+	 * - result - сюда будет записан результат выполения
+	 * Возвращаемые параметры:
+	 * true если команда выполнилась успешно
+	 */
+	virtual bool excute(std::string& result) = 0;
 
 protected:
 	Command (){}
