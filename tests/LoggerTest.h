@@ -67,7 +67,7 @@ TEST_F(LoggerTest, should_add_new_message_in_log){
 	std::string standardMessage = "test";
 	{
 		Logger* logger = new Logger("/tmp/log.txt");
-		logger->addMessage(standardMessage);
+		logger->write(standardMessage);
 		delete logger;
 	}
 
@@ -92,7 +92,7 @@ TEST_F(LoggerTest, should_add_current_date_before_message){
 		char strTime[100];
 		std::strftime(strTime, 100, "%m-%d-%y %R", timeinfo);
 		standardMessage = std::string("[") + std::string(strTime) + std::string("] test");
-		logger->addMessage("test", Logger::ADD_TIME);
+		logger->write("test", Logger::ADD_TIME);
 		delete logger;
 	}
 

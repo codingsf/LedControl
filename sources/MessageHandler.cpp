@@ -7,7 +7,7 @@ namespace LedControl {
 const std::string MessageHandler::PREFIX = "/tmp/";
 
 MessageHandler::MessageHandler(const std::string& serverName, CommandFactory* cf, Logger* log): cf_(cf), log_(log), isFinished_(false) {
-	log_->addMessage("server starting...", Logger::ADD_TIME | Logger::ADD_LN);
+	log_->write("server starting...", Logger::ADD_TIME | Logger::ADD_LN);
 
 	//создаем файл fifo, если его еще нет и открываем его
 	std::string pathToFifo = PREFIX + serverName;
@@ -23,7 +23,7 @@ MessageHandler::MessageHandler(const std::string& serverName, CommandFactory* cf
 		throw Exception(Exception::getSystemErrorMessage());
 	}
 
-	log_->addMessage("server started!", Logger::ADD_TIME | Logger::ADD_LN);
+	log_->write("server started!", Logger::ADD_TIME | Logger::ADD_LN);
 
 	//устанавливаем способы обработки сигналов
 	//sigset_t sset;

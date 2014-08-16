@@ -57,7 +57,7 @@ public:
 	 * Принимаемые параметры:
 	 * - message - сообщение для записи
 	*/
-	template<class T> void addMessage(const T& message);
+	template<class T> void write(const T& message);
 
 	/*
 	 * добавить сообщение в лог
@@ -67,7 +67,7 @@ public:
 	 *   Если установлен флаг ADD_TIME, то перед сообщением в лог добавится текущее время.
 	 *   Если установлен флаг ADD_LN, то в конце сообщения в добавится символ перевода строки.
 	*/
-	template<class T> void addMessage(const T& message, int flags);
+	template<class T> void write(const T& message, int flags);
 
 private:
 	Logger (const std::string& pathToLogFile);
@@ -76,12 +76,12 @@ private:
 	std::mutex m_;
 };//end of declaration class Logger
 
-template<class T> void Logger::addMessage(const T& message) {
+template<class T> void Logger::write(const T& message) {
 	std::lock_guard<std::mutex> guard(m_);
 	logFile_ << message;
 }//end of template<class T> void addMessage()
 
-template<class T> void Logger::addMessage(const T& message, int flags) {
+template<class T> void Logger::write(const T& message, int flags) {
 	std::string currTime = "";
 	std::string ln = "";
 	if (flags & ADD_TIME) {
