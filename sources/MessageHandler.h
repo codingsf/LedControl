@@ -36,14 +36,17 @@ public:
 	MessageHandler (const std::string& serverName, CommandFactory* cf, Logger* log);
 	~MessageHandler ();
 
-	void getRequest();
+	std::string getRequest();
 
 private:
 	static const std::string PREFIX;
 
 	CommandFactory* cf_;
 	Logger* log_;
-	int mainDesc_; //дескриптор главного канала. Именно в этот канал клиенты будут посылать сообщения
+	//int mainDesc_; //дескриптор главного канала. Именно в этот канал клиенты будут посылать сообщения
+	std::fstream fifo_;
+	//int bufSize_; //размер буфера fifo
+	//char* buf_;
 };//end of declaration class MessageHandler
 
 } /* LedControl */ 
