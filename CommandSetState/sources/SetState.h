@@ -12,6 +12,11 @@ class CommandSetState: public LedControl::Command {
  * класс, реализующий передачу команды драйверу светодиода
 */
 public:
+	CommandSetState(const CommandSetState&) = delete;
+	CommandSetState& operator=(const CommandSetState&) = delete;
+	CommandSetState(CommandSetState&&) = delete;
+	CommandSetState& operator=(CommandSetState&&) = delete;
+
 	/*
 	 * может генерировать ислючения типа LedControl::Exception
 	 */

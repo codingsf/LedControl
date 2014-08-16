@@ -17,7 +17,7 @@ public:
 	/*
 	 * добавить сообщение(задачу) в очередь
 	 */
-	void put(const T& item){
+	void enqueue(const T& item){
 		std::lock_guard<std::mutex> guard(lock_);
 		queue_.push_back(item);
 	}
@@ -25,7 +25,7 @@ public:
 	/*
 	 * извлечь задачу из очереди
 	 */
-	T get(){
+	T dequeue(){
 		T temp;
 		std::lock_guard<std::mutex> guard(lock_);
 		temp = queue_.front();

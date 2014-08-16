@@ -40,6 +40,11 @@ public:
 	FRIEND_TEST(CommandFactoryTest, should_fill_command_list);
 #endif
 
+	CommandFactory(const CommandFactory&) = delete;
+	CommandFactory& operator=(const CommandFactory&) = delete;
+	CommandFactory(CommandFactory&&) = delete;
+	CommandFactory& operator=(CommandFactory&&) = delete;
+
 	/*
 	 * Принимаемые параметры:
 	 * - pathToConfigFile - путь к конфигурационному файлу
