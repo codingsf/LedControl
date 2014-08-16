@@ -3,6 +3,7 @@
 namespace LedControl {
 
 const std::string MessageHandler::PREFIX = "/tmp/";
+const std::string MessageHandler::CLIENT_ID_PREFIX = "pid";
 
 MessageHandler::MessageHandler(const std::string& serverName, CommandFactory* cf, Logger* log)
 : cf_(cf),
@@ -23,15 +24,33 @@ log_(log)
 	}//end of if 
 }//end of MessageHandler::MessageHandler()
 
-std::string MessageHandler::getRequest() {
-	std::string buf;
-	std::getline(fifo_, buf);
-
-	return buf;
-}//end of void MessageHandler::getRequest()
-
 MessageHandler::~MessageHandler() {
 	fifo_.close();
 }//end of  MessageHandler::~MessageHandler()
+
+std::string MessageHandler::getRequest(std::string& message) {
+	message.clear();
+	std::getline(fifo_, message);
+	std::string clientId;
+	if (!getClientIdFromMessage(message, clientId)) {
+		return "";
+	}
+
+	return clientId;
+}//end of void MessageHandler::getRequest()
+
+bool MessageHandler::getClientIdFromMessage(const std::string& message, std::string& clientId) {
+	size_t pos = message.find(CLIENT_ID_PREFIX);
+	if ( pos == std::string::npos ) {
+		return false;
+	}//end of if 
+
+	for (size_t i = pos; (message[i] != ' ') && (i < message.size()); ++i) {
+		clientId += message[i];
+	}//end of for
+
+	return true;
+}//end of bool MessageHandler::getClientIdFromMessage()
+
 
 } /* LedControl */ 

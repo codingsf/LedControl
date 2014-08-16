@@ -28,25 +28,20 @@ class MessageHandler {
 */
 
 public:
-//#ifdef __LED_CONTROL_TEST__
-	//friend class MessageHandlerTest;
-	//FRIEND_TEST(MessageHandlerTest, should_read_messages_from_pipe_and_close_connection_on_fifo_if_recive_SIGINT);
-//#endif
-
 	MessageHandler (const std::string& serverName, CommandFactory* cf, Logger* log);
 	~MessageHandler ();
 
-	std::string getRequest();
+	std::string getRequest(std::string& message);
 
 private:
 	static const std::string PREFIX;
+	static const std::string CLIENT_ID_PREFIX;
 
 	CommandFactory* cf_;
 	Logger* log_;
-	//int mainDesc_; //дескриптор главного канала. Именно в этот канал клиенты будут посылать сообщения
 	std::fstream fifo_;
-	//int bufSize_; //размер буфера fifo
-	//char* buf_;
+
+	bool getClientIdFromMessage(const std::string& message, std::string& clientId);
 };//end of declaration class MessageHandler
 
 } /* LedControl */ 

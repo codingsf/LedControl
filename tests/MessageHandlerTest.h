@@ -11,7 +11,35 @@ namespace LedControl {
 
 class MessageHandlerTest: public ::testing::Test {
 public:
-	virtual void SetUp() {}
+	std::string clientId1_;
+	std::string clientId2_;
+	std::string message1_;
+	std::string message2_;
+	std::string m1_;
+	std::string m2_;
+
+	virtual void SetUp() {
+		Driver driver;
+		Logger* log = Logger::initialize();
+		CommandFactory cf("./tests_support/test1.conf", &driver, log);
+		MessageHandler mh("led1", &cf, log); 
+
+		m1_ = "pid123 set-state on";
+		m2_ = "pid456 set-state off";
+		pid_t pid = ::fork();
+
+		if(pid == 0){
+			std::ofstream out("/tmp/led1", std::fstream::out);
+			out << m1_ << std::endl;
+			out << m2_ << std::endl;
+			::_exit(0);
+		} else {
+			clientId1_ = mh.getRequest(message1_);
+
+			clientId2_ = mh.getRequest(message2_);
+		}
+	}
+
 	virtual void TearDown() {}
 };//end of declaration class MessgeHandlerTest: public ::testing::Test
 
@@ -25,27 +53,15 @@ TEST_F(MessageHandlerTest, should_create_fifo){
 }
 
 TEST_F(MessageHandlerTest, should_read_message_from_pipe){
-	Driver driver;
-	Logger* log = Logger::initialize();
-	CommandFactory cf("./tests_support/test1.conf", &driver, log);
-	MessageHandler mh("led1", &cf, log); 
+	EXPECT_STREQ(m1_.c_str(), message1_.c_str());
 
-	char m1[] = "pid123 set-state on";
-	char m2[] = "pid456 set-state off";
-	pid_t pid = ::fork();
+	EXPECT_STREQ(m2_.c_str(), message2_.c_str());
+}
 
-	if(pid == 0){
-		std::ofstream out("/tmp/led1", std::fstream::out);
-		out << m1 << std::endl;
-		out << m2 << std::endl;
-		::_exit(0);
-	} else {
-		std::string message = mh.getRequest();
-		EXPECT_STREQ(m1, message.c_str());
+TEST_F(MessageHandlerTest, should_return_clientId){
+	EXPECT_STREQ("pid123", clientId1_.c_str());
 
-		message = mh.getRequest();
-		EXPECT_STREQ(m2, message.c_str());
-	}
+	EXPECT_STREQ("pid456", clientId2_.c_str());
 }
 
 } /* LedControl */ 
