@@ -25,9 +25,12 @@ public:
 	/*
 	 * извлечь задачу из очереди
 	 */
-	const T& get(){
+	T get(){
+		T temp;
 		std::lock_guard<std::mutex> guard(lock_);
-		return queue_.pop_front();
+		temp = queue_.front();
+		queue_.pop_front();
+		return temp;
 	}
 	
 	/*
