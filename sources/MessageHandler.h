@@ -31,7 +31,7 @@ public:
 	MessageHandler (const std::string& serverName, CommandFactory* cf, Logger* log);
 	~MessageHandler ();
 
-	std::string getRequest(std::string& message);
+	Command* getRequest(std::string& message, std::string& clientId, std::string& cId);
 
 private:
 	static const std::string PREFIX;
@@ -42,6 +42,7 @@ private:
 	std::fstream fifo_;
 
 	bool getClientIdFromMessage(const std::string& message, std::string& clientId);
+	bool getCommandIdFromMessage(const std::string& message, std::string& comId);
 };//end of declaration class MessageHandler
 
 } /* LedControl */ 

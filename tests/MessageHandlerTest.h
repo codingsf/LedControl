@@ -13,6 +13,8 @@ class MessageHandlerTest: public ::testing::Test {
 public:
 	std::string clientId1_;
 	std::string clientId2_;
+	std::string cId1_;
+	std::string cId2_;
 	std::string message1_;
 	std::string message2_;
 	std::string m1_;
@@ -34,9 +36,9 @@ public:
 			out << m2_ << std::endl;
 			::_exit(0);
 		} else {
-			clientId1_ = mh.getRequest(message1_);
+			mh.getRequest(message1_, clientId1_, cId1_);
 
-			clientId2_ = mh.getRequest(message2_);
+			mh.getRequest(message2_, clientId2_, cId2_);
 		}
 	}
 
@@ -62,6 +64,13 @@ TEST_F(MessageHandlerTest, should_return_clientId){
 	EXPECT_STREQ("pid123", clientId1_.c_str());
 
 	EXPECT_STREQ("pid456", clientId2_.c_str());
+}
+
+TEST_F(MessageHandlerTest, should_return_command_identifier){
+	EXPECT_STREQ("set-state", cId1_.c_str());
+
+	EXPECT_STREQ("set-state", cId2_.c_str());
+
 }
 
 } /* LedControl */ 
