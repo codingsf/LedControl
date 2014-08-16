@@ -21,7 +21,7 @@ void CommandSetState::setArguments(const std::vector<std::string>& newArguments)
 		throw LedControl::Exception("command 'set-state' need one argument");
 	}//end of if 
 
-	if ( newArguments[0] != "on" || newArguments[0] != "off" ) {
+	if ( newArguments[0] != "on" && newArguments[0] != "off" ) {
 		throw LedControl::Exception("bad argument for command 'set-state'");
 	}//end of if 
 

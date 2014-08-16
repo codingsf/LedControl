@@ -59,7 +59,7 @@ private:
 	std::vector<std::string> arguments_;
 };//end of declaration class CommandSetState: public Command
 
-extern "C" LedControl::Command* create(LedControl::Driver* reciver, const std::string& clientId, const std::vector<std::string> arguments){
+extern "C" LedControl::Command* create(LedControl::Driver* reciver, const std::string& clientId, const std::vector<std::string>& arguments) {
 	return new CommandSetState(reciver, clientId, arguments);
 }
 
