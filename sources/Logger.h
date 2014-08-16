@@ -48,6 +48,9 @@ public:
 	 * - pathToFile - путь к лог-файлу (может быть пустым).
 	 *   В случае если передан пустой путь, создается файл с именем "led_control_log.txt"
 	 *   в той же директории, где расположен исполняемый файл.
+	 *   Примечания:
+	 *   функция может генерировать исключения типа Exception, если по каким-то причинам
+	 *   log-файл не создался
 	*/
 	static Logger* initialize( const std::string& pathToFile = "" );
 
@@ -57,7 +60,7 @@ public:
 	 * Принимаемые параметры:
 	 * - message - сообщение для записи
 	*/
-	template<class T> void write(const T& message);
+	template<class T> void write(const T& message) noexcept;
 
 	/*
 	 * добавить сообщение в лог
@@ -67,7 +70,7 @@ public:
 	 *   Если установлен флаг ADD_TIME, то перед сообщением в лог добавится текущее время.
 	 *   Если установлен флаг ADD_LN, то в конце сообщения в добавится символ перевода строки.
 	*/
-	template<class T> void write(const T& message, int flags);
+	template<class T> void write(const T& message, int flags) noexcept;
 
 private:
 	Logger (const std::string& pathToLogFile);
@@ -76,12 +79,12 @@ private:
 	std::mutex m_;
 };//end of declaration class Logger
 
-template<class T> void Logger::write(const T& message) {
+template<class T> void Logger::write(const T& message) noexcept {
 	std::lock_guard<std::mutex> guard(m_);
 	logFile_ << message;
 }//end of template<class T> void addMessage()
 
-template<class T> void Logger::write(const T& message, int flags) {
+template<class T> void Logger::write(const T& message, int flags) noexcept {
 	std::string currTime = "";
 	std::string ln = "";
 	if (flags & ADD_TIME) {
