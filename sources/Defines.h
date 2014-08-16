@@ -6,6 +6,10 @@
 #endif
 
 #ifdef __LED_CONTROL_DEBUG__
+#include <iostream>
+#endif
+
+#ifdef __LED_CONTROL_DEBUG__
 #define TRACE(arg, out) {out << #arg << std::endl; arg;}
 #else
 #define TRACE(arg, out)
