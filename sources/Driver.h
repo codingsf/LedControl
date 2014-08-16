@@ -24,12 +24,12 @@ public:
 	 * - newState - новое состояние.
 	 * Может принимать значения "on", "off"
 	*/
-	bool setState(const std::string& newState);
+	bool setState(const std::string& newState) noexcept;
 
 	/*
 	 * запросить состояние светодиода
 	*/
-	const std::string& getState() const;
+	const std::string& getState() const noexcept;
 
 	/*
 	 * установить цвет светодиода
@@ -38,12 +38,12 @@ public:
 	 * Может принимать значения "red", "green", "blue".
 	 *
 	*/
-	bool setColor(const std::string& newColor);
+	bool setColor(const std::string& newColor) noexcept;
 
 	/*
 	 * запросить цвет светодиода
 	*/
-	const std::string& getColor() const;
+	const std::string& getColor() const noexcept;
 
 	/*
 	 * установить частоту мерцания светодиода
@@ -51,14 +51,14 @@ public:
 	 * - newRate - новая частота в Герцах.
 	 * Может принимать значения "0", "1", "2", "3", "4".
 	*/
-	bool setRate(const std::string& newRate);
+	bool setRate(const std::string& newRate) noexcept;
 
 	/*
 	 * запросить частоту мерцания светодиода
 	*/
-	const std::string& getRate() const;
+	const std::string& getRate() const noexcept;
 
-	~Driver() {}
+	~Driver() noexcept {}
 private:
 	static const int MERCY_OF_FATE = 10;
 	static const std::string FAIL;

@@ -12,7 +12,7 @@ Driver::Driver(): state_("off"), color_("blue"), rate_("0") {
 	std::srand(time(0));
 }//end of Driver::Driver()
 
-bool Driver::setState(const std::string& newState) {
+bool Driver::setState(const std::string& newState) noexcept {
 	assert(newState == "on" || newState == "off");
 
 	int fate = std::rand() % MERCY_OF_FATE;
@@ -24,7 +24,7 @@ bool Driver::setState(const std::string& newState) {
 	return true;
 }//end of bool Driver::setState()
 
-const std::string& Driver::getState() const {
+const std::string& Driver::getState() const noexcept {
 	int fate = std::rand() % MERCY_OF_FATE;
 	if ( fate == 0 ) {
 		return FAIL;
@@ -33,7 +33,7 @@ const std::string& Driver::getState() const {
 	return state_;
 }//end of const std::string& Driver::getState()
 
-bool Driver::setColor(const std::string& newColor) {
+bool Driver::setColor(const std::string& newColor) noexcept {
 	assert(newColor == "green" || newColor == "red" || newColor == "blue");
 
 	int fate = std::rand() % MERCY_OF_FATE;
@@ -45,7 +45,7 @@ bool Driver::setColor(const std::string& newColor) {
 	return true;
 }//end of bool Driver::setColor()
 
-const std::string& Driver::getColor() const {
+const std::string& Driver::getColor() const noexcept {
 	int fate = std::rand() % MERCY_OF_FATE;
 	if ( fate == 0 ) {
 		return FAIL;
@@ -54,7 +54,7 @@ const std::string& Driver::getColor() const {
 	return color_;
 }//end of const std::string& Driver::getColor()
 
-bool Driver::setRate(const std::string& newRate) {
+bool Driver::setRate(const std::string& newRate) noexcept {
 	assert(newRate == "0" || newRate == "1" || newRate == "2" || newRate == "3" || newRate == "4" || newRate == "5");
 
 	int fate = std::rand() % MERCY_OF_FATE;
@@ -66,7 +66,7 @@ bool Driver::setRate(const std::string& newRate) {
 	return true;
 }//end of bool Driver::setRate()
 
-const std::string& Driver::getRate() const {
+const std::string& Driver::getRate() const noexcept {
 	int fate = std::rand() % MERCY_OF_FATE;
 	if ( fate == 0 ) {
 		return FAIL;
