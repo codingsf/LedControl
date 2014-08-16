@@ -54,17 +54,22 @@ public:
 	 * создать объект конкретной команды.
 	 * Принимаемые параметры:
 	 * - identifier - идентификатор команды
+	 * - clientId - ID клиента
+	 * - arguments - аргументы, необходимые непосредственно команде
 	 * Возвращаемый параметр:
 	 * указатель на конкретную команду, или nullptr
 	 * если команда не найдена.
 	*/
-	Command* create(const std::string& identifier) const;
+	Command* create(const std::string& identifier, const std::string& clientId, const std::vector<std::string>& arguments);
 private:
 	static const std::string CREATE_FUNC_NAME; //имя функции, создающей объект класса конкретной команды
+
+	typedef Command* (*pCreate) (Driver*, const std::string&, const std::vector<std::string>&);
+
 	Driver* reciver_; //получатель команд
 	Logger* log_;
 	std::map<std::string, Command*> commandList_;
-	std::vector<void*> handles_; //дескрипторы открытых библиотек
+	std::map<std::string, void*> handles_; //дескрипторы открытых библиотек
 
 	/*
 	 * получить данные из конфигурационного файла

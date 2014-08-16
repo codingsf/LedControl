@@ -14,26 +14,40 @@ CommandFactory::CommandFactory(const std::string& pathToConfigFile, Driver* reci
 }//end of CommandFactory::CommandFactory()
 
 CommandFactory::~CommandFactory() {
-	std::map<std::string, Command*>::iterator begin = commandList_.begin();
-	std::map<std::string, Command*>::iterator end = commandList_.end();
-	std::map<std::string, Command*>::iterator it;
-	for ( it = begin; it != end; ++it) {
-		delete it->second;
-	}//end of for
+	for (auto it: commandList_) {
+		delete it.second;
+	}
 
-	for (size_t i = 0; i < handles_.size(); ++i) {
-		dlclose(handles_[i]);
+	for (auto it: handles_) {
+		dlclose(it.second);
 	}//end of for
 
 }//end of  CommandFactory::~CommandFactory()
 
-Command* CommandFactory::create(const std::string& identifier) const {
+Command* CommandFactory::create(const std::string& identifier, const std::string& clientId, const std::vector<std::string>& arguments) {
 	auto it = commandList_.find(identifier);
-	if ( commandList_.find(identifier) != commandList_.end() ) {
-		return it->second;
+	if ( it != commandList_.end() ) {
+		Command* cm = it->second;
+		cm->setClientId(clientId);
+		cm->setArguments(arguments);
+
+		return cm;
 	}//end of if 
 
-	return nullptr;
+	auto handle = handles_.find(identifier);
+	if ( handle == handles_.end() ) {
+		return nullptr;
+	}//end of if 
+
+	pCreate createFunc = reinterpret_cast<pCreate>(dlsym(handle->second, CREATE_FUNC_NAME.c_str()));
+	if ( createFunc == 0 ) {
+		throw Exception ("invalid config file or lib");
+	}//end of if 
+
+	Command* cm = (*createFunc)(reciver_, clientId, arguments);
+	commandList_.insert(std::pair<std::string, Command*>(identifier, cm));
+
+	return cm;
 }//end of Command* CommandFactory::create()
 
 void CommandFactory::getDataFromConfigFile(std::ifstream& config) {
@@ -62,16 +76,7 @@ void CommandFactory::getDataFromConfigFile(std::ifstream& config) {
 			throw Exception("invalid config file: " + std::string(dlerror()));
 		}//end of if 
 
-		Command* (*createFunc) () = reinterpret_cast<Command* (*) ()>(dlsym(libHandle, CREATE_FUNC_NAME.c_str()));
-
-		if ( createFunc == 0 ) {
-			throw Exception ("invalid config file or lib");
-		}//end of if 
-
-		Command* command = (*createFunc)();
-
-		commandList_.insert(std::pair<std::string, Command*>(commandName,command));
-		handles_.push_back(libHandle);
+		handles_.insert(std::pair<std::string, void*>(commandName, libHandle));
 
 		commandName.clear();
 		pathToLib.clear();
