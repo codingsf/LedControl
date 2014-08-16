@@ -3,11 +3,15 @@
 namespace LedControl {
 
 Logger::Logger(const std::string& pathToLogFile) {
-	if ( pathToLogFile == "" ) { 
-		logFile_.open("./led_control_log.txt", std::ofstream::out | std::ofstream::app);
-	} else {
-		logFile_.open(pathToLogFile, std::ofstream::out | std::ofstream::app);
-	}//end of if
+	std::string path = pathToLogFile;
+	if ( path == "" ) { 
+		path = "./led_control_log.txt";
+	} //end of if
+
+	logFile_.open(path, std::ofstream::out | std::ofstream::app);
+	if ( !logFile_.is_open() ) {
+		throw Exception("file '" + pathToLogFile + "' can not open: " + Exception::getSystemErrorMessage());
+	}//end of if 
 }//end of Logger::Logger()
 
 Logger* Logger::initialize(const std::string& pathToLogFile) {

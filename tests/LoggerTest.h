@@ -63,6 +63,10 @@ TEST_F(LoggerTest, should_open_file_with_saving_previous_data){
 	std::remove("/tmp/log.txt");
 }
 
+TEST_F(LoggerTest, should_throw_exception_if_file_can_not_be_opened){
+	EXPECT_THROW(Logger::initialize("/usr/bin/log.txt"), Exception);
+}
+
 TEST_F(LoggerTest, should_add_new_message_in_log){
 	std::string standardMessage = "test";
 	{
