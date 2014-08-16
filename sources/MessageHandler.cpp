@@ -28,17 +28,21 @@ MessageHandler::~MessageHandler() {
 	fifo_.close();
 }//end of  MessageHandler::~MessageHandler()
 
-Command* MessageHandler::getRequest(std::string& message, std::string& clientId, std::string& cId) {
-	message.clear();
-	clientId.clear();
+Command* MessageHandler::getRequest() {
+	std::string message;
+	std::string clientId;
+	std::string commandId;
+	std::vector<std::string> args;
 	std::getline(fifo_, message);
 	if (!getClientIdFromMessage(message, clientId)) {
 		return nullptr;
 	}
 
-	if (!getCommandIdFromMessage(message, cId)) {
+	if (!getCommandIdFromMessage(message, commandId)) {
 		return nullptr;
 	}
+
+	getArgumentsFromMessage(message, args);
 
 	return nullptr;
 }//end of void MessageHandler::getRequest()
@@ -67,7 +71,28 @@ bool MessageHandler::getCommandIdFromMessage(const std::string& message, std::st
 	}//end of for
 
 	return true;
-
 }//end of bool MessageHandler::getCommandIdFromMessage()
+
+void MessageHandler::getArgumentsFromMessage(const std::string& message, std::vector<std::string>& args) {
+	size_t pos = message.find(" ");
+	if ( pos == std::string::npos ) {
+		return;
+	}//end of if 
+
+	pos = message.find(" ", pos+1);
+	if ( pos == std::string::npos ) {
+		return;
+	}//end of if 
+
+	std::string arg;
+	for (size_t i = pos+1; i < message.size(); ++i) {
+		if ( message[i] != ' ' ) {
+			arg += message[i];
+		} else {
+			args.push_back(arg);
+			arg.clear();
+		}
+	}//end of for
+}//end of void MessageHandler::getArgumentsFromMessage()
 
 } /* LedControl */ 

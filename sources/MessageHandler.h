@@ -28,10 +28,17 @@ class MessageHandler {
 */
 
 public:
+#ifdef __LED_CONTROL_TEST__
+	friend class MessageHandlerTest;
+	FRIEND_TEST(MessageHandlerTest, should_get_command_id_from_message);
+	FRIEND_TEST(MessageHandlerTest, should_get_client_id_from_message);
+	FRIEND_TEST(MessageHandlerTest, should_get_arguments_from_message);
+#endif
+
 	MessageHandler (const std::string& serverName, CommandFactory* cf, Logger* log);
 	~MessageHandler ();
 
-	Command* getRequest(std::string& message, std::string& clientId, std::string& cId);
+	Command* getRequest();
 
 private:
 	static const std::string PREFIX;
@@ -43,6 +50,7 @@ private:
 
 	bool getClientIdFromMessage(const std::string& message, std::string& clientId);
 	bool getCommandIdFromMessage(const std::string& message, std::string& comId);
+	void getArgumentsFromMessage(const std::string& message, std::vector<std::string>& args);
 };//end of declaration class MessageHandler
 
 } /* LedControl */ 
