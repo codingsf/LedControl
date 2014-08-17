@@ -79,6 +79,50 @@ TEST_F(MessageHandlerTest, should_return_nullptr_if_message_doesnt_have_clientId
 	EXPECT_TRUE(cm == nullptr);
 }
 
+TEST_F(MessageHandlerTest, should_return_unknown_command_object_if_message_doesnt_have_commandId){
+	Command* cm;
+	std::string message("pid1");
+	Driver driver;
+	Logger* log = Logger::initialize();
+	CommandFactory cf("./tests_support/test1.conf", &driver, log);
+	MessageHandler mh("led1", &cf, log); 
+
+	pid_t pid = ::fork();
+	if(pid == 0){
+		std::ofstream out("/tmp/led1", std::fstream::out);
+		out << message << std::endl;
+		::_exit(0);
+	} else {
+		cm = mh.getRequest();
+	}
+
+	std::string result;
+	cm->excute(result);
+	EXPECT_STREQ("no command identifier", result.c_str());
+}
+
+TEST_F(MessageHandlerTest, should_return_unknown_command_object_if_message_has_errors){
+	Command* cm;
+	std::string message("pid1 bad-state on");
+	Driver driver;
+	Logger* log = Logger::initialize();
+	CommandFactory cf("./tests_support/test1.conf", &driver, log);
+	MessageHandler mh("led1", &cf, log); 
+
+	pid_t pid = ::fork();
+	if(pid == 0){
+		std::ofstream out("/tmp/led1", std::fstream::out);
+		out << message << std::endl;
+		::_exit(0);
+	} else {
+		cm = mh.getRequest();
+	}
+
+	std::string result;
+	cm->excute(result);
+	EXPECT_STREQ("Command 'bad-state' is unknown", result.c_str());
+}
+
 TEST_F(MessageHandlerTest, should_get_client_id_from_message){
 	Driver driver;
 	Logger* log = Logger::initialize();

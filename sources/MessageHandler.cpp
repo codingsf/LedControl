@@ -28,9 +28,7 @@ MessageHandler::~MessageHandler() {
 	fifo_.close();
 }//end of  MessageHandler::~MessageHandler()
 
-Command* MessageHandler::getRequest() {
-	static UnknownCommand uc; //заводим объект класса неизвестная команда, чтобы затем возращать его в случае ошибок
-
+Command* MessageHandler::getRequest() noexcept {
 	std::string message;
 	std::string clientId;
 	std::string commandId;
@@ -41,11 +39,11 @@ Command* MessageHandler::getRequest() {
 	}
 
 	if (!getCommandIdFromMessage(message, commandId)) {
-		//uc.setClientId(clientId);
-		//args.push_back("no command identifier");
-		//uc.setArguments(args);
-		//return &uc;
-		return nullptr;
+		Command* uc = new UnknownCommand;
+		uc->setClientId(clientId);
+		args.push_back("no command identifier");
+		uc->setArguments(args);
+		return uc;
 	}
 
 	getArgumentsFromMessage(message, args);
@@ -54,8 +52,12 @@ Command* MessageHandler::getRequest() {
 	try {
 		cm = cf_->create(commandId, clientId, args);
 	} catch (const Exception& e) {
-		//uc.setClientId(clientId, 
-		return nullptr;
+		Command* uc = new UnknownCommand;
+		uc->setClientId(clientId);
+		args.clear();
+		args.push_back(e.what());
+		uc->setArguments(args);
+		return uc;
 	}
 
 	return cm;

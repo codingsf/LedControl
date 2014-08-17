@@ -39,7 +39,15 @@ public:
 	MessageHandler (const std::string& serverName, CommandFactory* cf, Logger* log);
 	~MessageHandler ();
 
-	Command* getRequest();
+	/*
+	 * Получить запрос:
+	 * Возвращаемое значение:
+	 * - Указатель на объект конкретной команды. Может быть равен nullptr если
+	 *   в полученном запросе и передан ID клиента
+	 *   Примечание:
+	 *   Вместе с указателем передается и владение
+	 */
+	Command* getRequest() noexcept;
 
 private:
 	static const std::string PREFIX;
