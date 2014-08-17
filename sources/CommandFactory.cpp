@@ -36,12 +36,12 @@ Command* CommandFactory::create(const std::string& identifier, const std::string
 
 	auto handle = handles_.find(identifier);
 	if ( handle == handles_.end() ) {
-		return nullptr;
+		throw Exception("Command '" + identifier + "' is unknown");
 	}//end of if 
 
 	pCreate createFunc = reinterpret_cast<pCreate>(dlsym(handle->second, CREATE_FUNC_NAME.c_str()));
 	if ( createFunc == 0 ) {
-		throw Exception ("invalid config file or lib");
+		throw Exception ("invalid config file or lib for '" + identifier + "'");
 	}//end of if 
 
 	Command* cm = (*createFunc)(reciver_, clientId, arguments);

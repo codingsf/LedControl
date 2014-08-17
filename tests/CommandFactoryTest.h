@@ -61,8 +61,17 @@ TEST_F(CommandFactoryTest, should_return_pointer_on_concrete_command_object){
 	Command* cm1 = c.create("set-state", clientId, args);
 	EXPECT_TRUE(cm == cm1);
 
-	cm = c.create("bad-identifier", clientId, args);
-	EXPECT_TRUE(cm == nullptr);
+}
+
+TEST_F(CommandFactoryTest, should_throw_exception_if_identifier_not_valid){
+	Driver driver;
+	Logger* log = Logger::initialize();
+	CommandFactory c("./tests_support/test1.conf", &driver, log);
+	std::string clientId = "pid2";
+	std::vector<std::string> args;
+	args.push_back("on");
+	EXPECT_THROW(c.create("bad-identifier", clientId, args), Exception);
+
 }
 
 } /* LedControl */ 
