@@ -14,10 +14,6 @@ CommandFactory::CommandFactory(const std::string& pathToConfigFile, Driver* reci
 }//end of CommandFactory::CommandFactory()
 
 CommandFactory::~CommandFactory() {
-	for (auto it: commandList_) {
-		delete it.second;
-	}
-
 	for (auto it: handles_) {
 		dlclose(it.second);
 	}//end of for
@@ -25,15 +21,6 @@ CommandFactory::~CommandFactory() {
 }//end of  CommandFactory::~CommandFactory()
 
 Command* CommandFactory::create(const std::string& identifier, const std::string& clientId, const std::vector<std::string>& arguments) {
-	auto it = commandList_.find(identifier);
-	if ( it != commandList_.end() ) {
-		Command* cm = it->second;
-		cm->setClientId(clientId);
-		cm->setArguments(arguments);
-
-		return cm;
-	}//end of if 
-
 	auto handle = handles_.find(identifier);
 	if ( handle == handles_.end() ) {
 		throw Exception("Command '" + identifier + "' is unknown");
@@ -44,10 +31,7 @@ Command* CommandFactory::create(const std::string& identifier, const std::string
 		throw Exception ("invalid config file or lib for '" + identifier + "'");
 	}//end of if 
 
-	Command* cm = (*createFunc)(reciver_, clientId, arguments);
-	commandList_.insert(std::pair<std::string, Command*>(identifier, cm));
-
-	return cm;
+	return (*createFunc)(reciver_, clientId, arguments);
 }//end of Command* CommandFactory::create()
 
 void CommandFactory::getDataFromConfigFile(std::ifstream& config) {

@@ -52,14 +52,18 @@ TEST_F(CommandFactoryTest, should_return_pointer_on_concrete_command_object){
 	Logger* log = Logger::initialize();
 	CommandFactory c("./tests_support/test1.conf", &driver, log);
 
-	std::string clientId = "pid2";
-	std::vector<std::string> args;
-	args.push_back("on");
-	Command* cm = c.create("set-state", clientId, args);
+	std::string clientId1 = "pid1";
+	std::vector<std::string> args1;
+	args1.push_back("on");
+	Command* cm = c.create("set-state", clientId1, args1);
 	EXPECT_TRUE(cm != nullptr);
+	EXPECT_STREQ("pid1", cm->getClientId().c_str());
 
-	Command* cm1 = c.create("set-state", clientId, args);
-	EXPECT_TRUE(cm == cm1);
+	std::string clientId2 = "pid2";
+	std::vector<std::string> args2;
+	args2.push_back("on");
+	Command* cm1 = c.create("set-state", clientId2, args2);
+	EXPECT_STREQ("pid2", cm1->getClientId().c_str());
 
 }
 
