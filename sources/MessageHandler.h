@@ -49,6 +49,8 @@ public:
 	 */
 	Command* getRequest() noexcept;
 
+	void giveAnswer(Command* cm) noexcept;
+
 private:
 	static const std::string PREFIX;
 	static const std::string CLIENT_ID_PREFIX;
@@ -56,6 +58,7 @@ private:
 	CommandFactory* cf_;
 	Logger* log_;
 	std::fstream fifo_;
+	//std::map
 
 	bool getClientIdFromMessage(const std::string& message, std::string& clientId);
 	bool getCommandIdFromMessage(const std::string& message, std::string& comId);

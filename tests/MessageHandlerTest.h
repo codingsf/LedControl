@@ -173,6 +173,40 @@ TEST_F(MessageHandlerTest, should_get_arguments_from_message){
 	}//end of for
 }
 
+TEST_F(MessageHandlerTest, should_write_answer_in_fifo){
+	Driver driver;
+	Logger* log = Logger::initialize();
+	CommandFactory cf("./tests_support/test1.conf", &driver, log);
+	std::vector<std::string> args;
+	args.push_back("on");
+	Command* cm = cf.create("set-state", "pid1", args);
+	MessageHandler mh("led1", &cf, log); 
+	pid_t pid = ::fork();
+	if(pid == 0){
+		std::string answer;
+		std::fstream in;
+		while(!in.is_open()){
+			in.open("/tmp/pid1", std::fstream::in | std::fstream::out );
+		}
+		std::getline(in, answer);
+		std::ofstream out("./answer");
+		out << answer << std::endl;
+		in.close();
+		out.close();
+		::_exit(0);
+	} else {
+
+		mh.giveAnswer(cm);
+	}
+
+	::usleep(100000);
+	std::ifstream in("./answer");
+	std::string ans;
+	std::getline(in, ans);
+	EXPECT_TRUE(ans == "OK" || ans == "FAILED");
+	std::remove("./answer");
+}
+
 } /* LedControl */ 
 
 #endif /* end of include guard: LED_CONTROL_MESSAGE_HANDLER_TEST_H_ */
