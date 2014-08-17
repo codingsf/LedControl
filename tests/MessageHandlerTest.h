@@ -53,11 +53,30 @@ TEST_F(MessageHandlerTest, should_return_command){
 
 	EXPECT_TRUE(cm1 != nullptr);
 	EXPECT_TRUE(cm2 != nullptr);
-	EXPECT_TRUE(cm1 == cm2);
 
-	//EXPECT_STREQ("pid123", cm1->getClientId().c_str());
+	EXPECT_STREQ("pid123", cm1->getClientId().c_str());
 
-	//EXPECT_STREQ("pid456", cm2->getClientId().c_str());
+	EXPECT_STREQ("pid456", cm2->getClientId().c_str());
+}
+
+TEST_F(MessageHandlerTest, should_return_nullptr_if_message_doesnt_have_clientId){
+	Command* cm;
+	std::string message("set-state on");
+	Driver driver;
+	Logger* log = Logger::initialize();
+	CommandFactory cf("./tests_support/test1.conf", &driver, log);
+	MessageHandler mh("led1", &cf, log); 
+
+	pid_t pid = ::fork();
+	if(pid == 0){
+		std::ofstream out("/tmp/led1", std::fstream::out);
+		out << message << std::endl;
+		::_exit(0);
+	} else {
+		cm = mh.getRequest();
+	}
+
+	EXPECT_TRUE(cm == nullptr);
 }
 
 TEST_F(MessageHandlerTest, should_get_client_id_from_message){
@@ -95,12 +114,16 @@ TEST_F(MessageHandlerTest, should_get_arguments_from_message){
 	MessageHandler mh("led1", &cf, log); 
 	std::vector<std::string> args1;
 	mh.getArgumentsFromMessage(m1_, args1);
+	EXPECT_TRUE(!args1.empty());
+	EXPECT_TRUE(args1.size() == 1);
 	for (auto it: args1) {
 		EXPECT_STREQ("on", it.c_str());
 	}//end of for
 
 	std::vector<std::string> args2;
 	mh.getArgumentsFromMessage(m2_, args2);
+	EXPECT_TRUE(!args2.empty());
+	EXPECT_TRUE(args2.size() == 1);
 	for (auto it: args2) {
 		EXPECT_STREQ("off", it.c_str());
 	}//end of for

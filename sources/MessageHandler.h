@@ -11,6 +11,7 @@
 #include "Exception.h"
 #include "MessageQueue.h"
 #include "CommandFactory.h"
+#include "UnknownCommand.h"
 
 #include <cstring>
 

@@ -29,6 +29,8 @@ MessageHandler::~MessageHandler() {
 }//end of  MessageHandler::~MessageHandler()
 
 Command* MessageHandler::getRequest() {
+	static UnknownCommand uc; //заводим объект класса неизвестная команда, чтобы затем возращать его в случае ошибок
+
 	std::string message;
 	std::string clientId;
 	std::string commandId;
@@ -39,15 +41,29 @@ Command* MessageHandler::getRequest() {
 	}
 
 	if (!getCommandIdFromMessage(message, commandId)) {
+		//uc.setClientId(clientId);
+		//args.push_back("no command identifier");
+		//uc.setArguments(args);
+		//return &uc;
 		return nullptr;
 	}
 
 	getArgumentsFromMessage(message, args);
 
-	return nullptr;
+	Command* cm = nullptr;
+	try {
+		cm = cf_->create(commandId, clientId, args);
+	} catch (const Exception& e) {
+		//uc.setClientId(clientId, 
+		return nullptr;
+	}
+
+	return cm;
 }//end of void MessageHandler::getRequest()
 
 bool MessageHandler::getClientIdFromMessage(const std::string& message, std::string& clientId) {
+	clientId.clear();
+
 	size_t pos = message.find_first_of(CLIENT_ID_PREFIX);
 	if ( pos == std::string::npos ) {
 		return false;
@@ -61,6 +77,8 @@ bool MessageHandler::getClientIdFromMessage(const std::string& message, std::str
 }//end of bool MessageHandler::getClientIdFromMessage()
 
 bool MessageHandler::getCommandIdFromMessage(const std::string& message, std::string& comId) {
+	comId.clear();
+
 	size_t pos = message.find_first_of(" ");
 	if ( pos == std::string::npos ) {
 		return false;
@@ -74,6 +92,8 @@ bool MessageHandler::getCommandIdFromMessage(const std::string& message, std::st
 }//end of bool MessageHandler::getCommandIdFromMessage()
 
 void MessageHandler::getArgumentsFromMessage(const std::string& message, std::vector<std::string>& args) {
+	args.clear();
+
 	size_t pos = message.find(" ");
 	if ( pos == std::string::npos ) {
 		return;
@@ -93,6 +113,10 @@ void MessageHandler::getArgumentsFromMessage(const std::string& message, std::ve
 			arg.clear();
 		}
 	}//end of for
+
+	if ( !arg.empty() ) {
+		args.push_back(arg);
+	}//end of if 
 }//end of void MessageHandler::getArgumentsFromMessage()
 
 } /* LedControl */ 
