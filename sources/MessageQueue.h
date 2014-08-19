@@ -5,46 +5,41 @@
  * mail: aimed.fire@gmail.com
 */
 
+#include "Command.h"
+
 #include <deque>
 #include <mutex>
+#include <condition_variable>
 
-template<class T> class MessageQueue {
+namespace LedControl {
+
+class MessageQueue {
 /*
- * Данный класс реализует очередь с поддержкой многопоточности
+ * Данный класс реализует потокобезопасную очередь команд 
  */
 public:
-
 	/*
 	 * добавить сообщение(задачу) в очередь
 	 */
-	void enqueue(const T& item){
-		std::lock_guard<std::mutex> guard(lock_);
-		queue_.push_back(item);
-	}
+	void enqueue(Command* newCommand);
 
 	/*
 	 * извлечь задачу из очереди
 	 */
-	T dequeue(){
-		T temp;
-		std::lock_guard<std::mutex> guard(lock_);
-		temp = queue_.front();
-		queue_.pop_front();
-		return temp;
-	}
+	Command* dequeue();
 	
 	/*
 	 * проверить пуста ли очередь
 	 */
-	bool empty(){
-		std::lock_guard<std::mutex> guard(lock_);
-		return queue_.empty();
-	}
+	bool finishWork();
 
 private:
-	std::deque<T> queue_;
+	std::deque<Command*> queue_;
 	std::mutex lock_;
+	std::condition_variable dataCondition_;
 };
+
+} /* LedControl */ 
 
 #endif /* end of include guard: LED_CONTROLLER_MESSAGE_QUEUE_H_ */
 
