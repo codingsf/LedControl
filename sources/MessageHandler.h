@@ -17,7 +17,6 @@
 #include <unistd.h>
 #include <sys/stat.h>
 #include <poll.h>
-//#include <fcntl.h>
 
 namespace LedControl {
 
@@ -75,11 +74,12 @@ private:
 	CommandFactory* cf_;
 	Logger* log_;
 	FILE* fifo_;
-	//std::map
+	std::map<std::string, FILE*> clientHandles_;
 
 	bool getClientIdFromMessage(const std::string& message, std::string& clientId);
 	bool getCommandIdFromMessage(const std::string& message, std::string& comId);
 	void getArgumentsFromMessage(const std::string& message, std::vector<std::string>& args);
+	FILE* createConnectionWithNewClient(const std::string& clientId);
 };//end of declaration class MessageHandler
 
 } /* LedControl */ 

@@ -27,6 +27,10 @@ log_(log)
 
 MessageHandler::~MessageHandler() {
 	std::fclose(fifo_);
+
+	for (const auto it: clientHandles_) {
+		std::fclose(it.second);
+	}
 }//end of  MessageHandler::~MessageHandler()
 
 Command* MessageHandler::getRequest() noexcept {
@@ -76,18 +80,14 @@ Command* MessageHandler::getRequest() noexcept {
 }//end of void MessageHandler::getRequest()
 
 void MessageHandler::giveAnswer(Command* cm) noexcept {
-	std::string pathToFifo = PREFIX + cm->getClientId();
-	struct stat sb;
-	if ( ::stat(pathToFifo.c_str(), &sb) != 0 ) {
-		if (::mkfifo(pathToFifo.c_str(), 0600) < 0) {
-			log_->write("fifo '" + pathToFifo + "'can not be created: " + Exception::getSystemErrorMessage(), Logger::ADD_TIME | Logger::ADD_LN);
-		}
-	}//end of if 
 
-	std::fstream out(pathToFifo.c_str(), std::fstream::in | std::fstream::out);
-	if ( !out.is_open() ) {
-		log_->write("file '" + pathToFifo + "' can not open: " + Exception::getSystemErrorMessage(), Logger::ADD_TIME | Logger::ADD_LN);
-	}//end of if 
+	FILE* out;
+	auto it = clientHandles_.find(cm->getClientId());
+	if ( it != clientHandles_.end() ) {
+		out = it->second;
+	} else {
+		out = createConnectionWithNewClient(cm->getClientId());
+	} //end of if
 
 	std::string message;
 	std::string result;
@@ -103,8 +103,11 @@ void MessageHandler::giveAnswer(Command* cm) noexcept {
 		message += result;
 	}//end of if
 
-	out << message << std::endl;
-	out.close();
+	message += "\n";
+
+	std::fputs(message.c_str(), out);
+	std::fflush(out);
+
 	delete cm;
 }//end of void MessageHandler::giveAnswer()
 
@@ -165,5 +168,27 @@ void MessageHandler::getArgumentsFromMessage(const std::string& message, std::ve
 		args.push_back(arg);
 	}//end of if 
 }//end of void MessageHandler::getArgumentsFromMessage()
+
+FILE* MessageHandler::createConnectionWithNewClient(const std::string& clientId) {
+	FILE* connection = nullptr;
+	std::string pathToFifo = PREFIX + clientId;
+	struct stat sb;
+	if ( ::stat(pathToFifo.c_str(), &sb) != 0 ) {
+		if (::mkfifo(pathToFifo.c_str(), 0600) < 0) {
+			log_->write("fifo '" + pathToFifo + "'can not be created: " + Exception::getSystemErrorMessage(), Logger::ADD_TIME | Logger::ADD_LN);
+		}
+	}//end of if 
+
+	connection = std::fopen(pathToFifo.c_str(), "w");
+	if ( connection == nullptr) {
+		log_->write("file '" + pathToFifo + "' can not open: " + Exception::getSystemErrorMessage(), Logger::ADD_TIME | Logger::ADD_LN);
+	}//end of if 
+
+	::setbuf(connection, nullptr);
+
+	clientHandles_.insert(std::pair<std::string, FILE*>(clientId, connection));
+
+	return connection;
+}//end of FILE* MessageHandler::createConnectionWithNewCLient()
 
 } /* LedControl */ 

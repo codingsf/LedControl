@@ -5,8 +5,7 @@
 
 #include "TestFramework.h"
 
-#include <thread>
-#include <cstdio>
+#include <cstring>
 
 namespace LedControl {
 
@@ -189,14 +188,14 @@ TEST_F(MessageHandlerTest, should_write_answer_in_fifo){
 		mh.giveAnswer(cm);
 		_exit(0);
 	} else {
-		std::string ans;
-		std::fstream in;
-		while(!in.is_open()){
-			in.open("/tmp/pid1", std::fstream::in | std::fstream::out );
-		}
-		std::getline(in, ans);
-		EXPECT_TRUE(ans == "OK" || ans == "FAILED");
-		in.close();
+		char ans[100];
+		FILE* in = nullptr;
+		while ( in == nullptr ) {
+			in = std::fopen("/tmp/pid1", "r");
+		}//end of while
+		std::fgets(ans, sizeof(ans), in);
+		EXPECT_TRUE(std::strcmp(ans,"OK\n") || std::strcmp(ans,"FAILED\n"));
+		std::fclose(in);
 	}
 }
 
