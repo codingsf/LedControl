@@ -6,6 +6,7 @@
 #include "TestFramework.h"
 
 #include <thread>
+#include <cstdio>
 
 namespace LedControl {
 
@@ -15,8 +16,8 @@ public:
 	std::string m2_;
 
 	virtual void SetUp() {
-		m1_ = "pid123 set-state on";
-		m2_ = "pid456 set-state off";
+		m1_ = "pid123 set-state on\n";
+		m2_ = "pid456 set-state off\n";
 	}
 
 	virtual void TearDown() {}
@@ -41,13 +42,15 @@ TEST_F(MessageHandlerTest, should_return_command){
 
 	pid_t pid = ::fork();
 	if(pid == 0){
-		std::ofstream out("/tmp/led1", std::fstream::out);
-		out << m1_ << std::endl;
-		out << m2_ << std::endl;
+		FILE* out = std::fopen("/tmp/led1", "w");
+		std::fputs(m1_.c_str(), out);
+		::fflush(out);
+		std::fputs(m2_.c_str(), out);
+		::fflush(out);
+		std::fclose(out);
 		::_exit(0);
 	} else {
 		cm1 = mh.getRequest();
-
 		cm2 = mh.getRequest();
 	}
 
@@ -174,37 +177,27 @@ TEST_F(MessageHandlerTest, should_get_arguments_from_message){
 }
 
 TEST_F(MessageHandlerTest, should_write_answer_in_fifo){
-	Driver driver;
-	Logger* log = Logger::initialize();
-	CommandFactory cf("./tests_support/test1.conf", &driver, log);
-	std::vector<std::string> args;
-	args.push_back("on");
-	Command* cm = cf.create("set-state", "pid1", args);
-	MessageHandler mh("led1", &cf, log); 
 	pid_t pid = ::fork();
-	if(pid == 0){
-		std::string answer;
+	if ( pid == 0) {
+		Driver driver;
+		Logger* log = Logger::initialize();
+		CommandFactory cf("./tests_support/test1.conf", &driver, log);
+		std::vector<std::string> args;
+		args.push_back("on");
+		Command* cm = cf.create("set-state", "pid1", args);
+		MessageHandler mh("led1", &cf, log); 
+		mh.giveAnswer(cm);
+		_exit(0);
+	} else {
+		std::string ans;
 		std::fstream in;
 		while(!in.is_open()){
 			in.open("/tmp/pid1", std::fstream::in | std::fstream::out );
 		}
-		std::getline(in, answer);
-		std::ofstream out("./answer");
-		out << answer << std::endl;
+		std::getline(in, ans);
+		EXPECT_TRUE(ans == "OK" || ans == "FAILED");
 		in.close();
-		out.close();
-		::_exit(0);
-	} else {
-
-		mh.giveAnswer(cm);
 	}
-
-	::usleep(100000);
-	std::ifstream in("./answer");
-	std::string ans;
-	std::getline(in, ans);
-	EXPECT_TRUE(ans == "OK" || ans == "FAILED");
-	std::remove("./answer");
 }
 
 } /* LedControl */ 

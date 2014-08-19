@@ -18,22 +18,34 @@ log_(log)
 		}
 	}//end of if 
 
-	fifo_.open(pathToFifo.c_str(), std::fstream::in | std::fstream::out);
-	if ( !fifo_.is_open() ) {
+	fifo_ = std::fopen(pathToFifo.c_str(), "r+");
+	if ( fifo_ == nullptr ) {
 		throw Exception("file '" + pathToFifo + "' can not open: " + Exception::getSystemErrorMessage());
 	}//end of if 
+	setbuf(fifo_, nullptr); // отменяюем буферизацию
 }//end of MessageHandler::MessageHandler()
 
 MessageHandler::~MessageHandler() {
-	fifo_.close();
+	std::fclose(fifo_);
 }//end of  MessageHandler::~MessageHandler()
 
 Command* MessageHandler::getRequest() noexcept {
-	std::string message;
+	static char buf[MAX_SIZE] = {0};
+	pollfd pfd[1];
+	pfd[0].fd = fileno(fifo_);
+	pfd[0].events = POLLIN;
+
+	if ( ::poll(pfd, 1, -1) < 0 ) {
+		return nullptr;
+	}//end of if 
+
+	std::fgets(buf, sizeof(buf), fifo_);
+	std::string message(buf);
+
 	std::string clientId;
 	std::string commandId;
 	std::vector<std::string> args;
-	std::getline(fifo_, message);
+
 	if (!getClientIdFromMessage(message, clientId)) {
 		return nullptr;
 	}
@@ -93,6 +105,7 @@ void MessageHandler::giveAnswer(Command* cm) noexcept {
 
 	out << message << std::endl;
 	out.close();
+	delete cm;
 }//end of void MessageHandler::giveAnswer()
 
 bool MessageHandler::getClientIdFromMessage(const std::string& message, std::string& clientId) {
@@ -103,7 +116,7 @@ bool MessageHandler::getClientIdFromMessage(const std::string& message, std::str
 		return false;
 	}//end of if 
 
-	for (size_t i = pos; (message[i] != ' ') && (i < message.size()); ++i) {
+	for (size_t i = pos; (message[i] != ' ') && ( message[i] != '\n') && (i < message.size()); ++i) {
 		clientId += message[i];
 	}//end of for
 
@@ -118,7 +131,7 @@ bool MessageHandler::getCommandIdFromMessage(const std::string& message, std::st
 		return false;
 	}//end of if 
 
-	for (size_t i = pos+1; (message[i] != ' ') && (i < message.size()); ++i) {
+	for (size_t i = pos+1; (message[i] != ' ') && ( message[i] != '\n') && (i < message.size()); ++i) {
 		comId += message[i];
 	}//end of for
 
@@ -140,7 +153,7 @@ void MessageHandler::getArgumentsFromMessage(const std::string& message, std::ve
 
 	std::string arg;
 	for (size_t i = pos+1; i < message.size(); ++i) {
-		if ( message[i] != ' ' ) {
+		if ( message[i] != ' '  && message[i] != '\n') {
 			arg += message[i];
 		} else {
 			args.push_back(arg);

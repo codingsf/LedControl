@@ -9,16 +9,15 @@
 #include "Defines.h"
 #include "Logger.h"
 #include "Exception.h"
-#include "MessageQueue.h"
 #include "CommandFactory.h"
 #include "UnknownCommand.h"
 
-#include <cstring>
+#include <cstdio>
 
 #include <unistd.h>
 #include <sys/stat.h>
-#include <fcntl.h>
-#include <signal.h>
+#include <poll.h>
+//#include <fcntl.h>
 
 namespace LedControl {
 
@@ -71,10 +70,11 @@ public:
 private:
 	static const std::string PREFIX;
 	static const std::string CLIENT_ID_PREFIX;
+	static const int MAX_SIZE = 512;
 
 	CommandFactory* cf_;
 	Logger* log_;
-	std::fstream fifo_;
+	FILE* fifo_;
 	//std::map
 
 	bool getClientIdFromMessage(const std::string& message, std::string& clientId);
