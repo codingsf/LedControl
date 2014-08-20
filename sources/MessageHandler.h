@@ -16,7 +16,7 @@
 
 #include <unistd.h>
 #include <sys/stat.h>
-#include <poll.h>
+#include <sys/select.h>
 
 namespace LedControl {
 
@@ -32,8 +32,7 @@ class MessageHandler {
  * то создается объект команды.
  * Если задана команда, то она выполняется, а результат ее выполения
  * записывается в канал '/tmp/<clientId>' (если он не существовал, то создается)
- *
-*/
+ */
 
 public:
 #ifdef __LED_CONTROL_TEST__
@@ -65,6 +64,13 @@ public:
 	 * (если он не сущестовал, то создает его) и записывает туда результат выполения команды
 	 */
 	void giveAnswer(Command* cm) noexcept;
+
+	/*
+	 * выдать дескриптор прослушиваемого канала
+	 */
+	FILE* getFifoDescriptor() {
+		return fifo_;
+	}
 
 private:
 	static const std::string PREFIX;

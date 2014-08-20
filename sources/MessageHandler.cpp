@@ -35,16 +35,21 @@ MessageHandler::~MessageHandler() {
 
 Command* MessageHandler::getRequest() noexcept {
 	static char buf[MAX_SIZE] = {0};
-	pollfd pfd[1];
-	pfd[0].fd = fileno(fifo_);
-	pfd[0].events = POLLIN;
 
-	if ( ::poll(pfd, 1, -1) < 0 ) {
+	fd_set readset;
+	FD_ZERO(&readset);
+	FD_SET(fileno(fifo_), &readset);
+	if ( ::select(fileno(fifo_)+1, &readset, NULL, NULL, NULL) < 0 ) {
 		return nullptr;
 	}//end of if 
 
 	std::fgets(buf, sizeof(buf), fifo_);
 	std::string message(buf);
+
+	//если получили такое сообщение, то вероятнее всего работа закончена
+	if ( message == "quit\n" ) {
+		return nullptr;
+	}//end of if 
 
 	std::string clientId;
 	std::string commandId;
