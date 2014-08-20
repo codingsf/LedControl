@@ -2,6 +2,7 @@
 #include "LoggerTest.h"
 #include "CommandFactoryTest.h"
 #include "MessageHandlerTest.h"
+#include "ServerTest.h"
 
 int main(int argc, char *argv[]) {
 	::testing::InitGoogleTest(&argc, argv);
