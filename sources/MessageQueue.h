@@ -28,11 +28,6 @@ public:
 	 */
 	Command* dequeue();
 	
-	/*
-	 * проверить пуста ли очередь
-	 */
-	bool finishWork();
-
 private:
 	std::deque<Command*> queue_;
 	std::mutex lock_;
