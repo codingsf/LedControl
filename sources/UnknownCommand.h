@@ -17,7 +17,6 @@ class UnknownCommand: public Command {
  * скопировать текст ошибки в 0-ой элемент массива параметров.
  */
 public:
-	UnknownCommand () {}
 	/*
 	 * установить новый ID клиента 
 	 * Принимаемые парамеры:
