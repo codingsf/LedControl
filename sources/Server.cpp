@@ -55,7 +55,7 @@ private:
 };//end of declaration class Server::SignalHandler
 
 
-Server::Server(MessageHandler* mh): sh_(SignalHandler::instance()), numberOfThreads_(0), mh_(mh) {
+Server::Server(MessageHandler* mh, Logger* log): sh_(SignalHandler::instance()), numberOfThreads_(0), mh_(mh), log_(log) {
 	//маскируем все сигналы кроме SIGINT и устанавливаем обработчик
 	sigset_t sset;
 	::sigfillset(&sset);
@@ -91,6 +91,8 @@ void Server::setAnswers() noexcept {
 }//end of void Server::setAnswers()
 
 void Server::run(size_t numberOfThreads) {
+	log_->write("server starting...", Logger::ADD_TIME | Logger::ADD_LN);
+
 	//ограничиваем максимальное число потоков 10-ю
 	numberOfThreads_ = numberOfThreads;
 	if ( numberOfThreads_ > 10 ) {
@@ -106,15 +108,21 @@ void Server::run(size_t numberOfThreads) {
 			threads[i] = std::thread(&Server::setAnswers, this);
 		}//end of for
 
+		log_->write("server started!", Logger::ADD_TIME | Logger::ADD_LN);
+
 		std::for_each(threads.begin(), threads.end(), std::mem_fn(&std::thread::join));
 	} else {
 		while ( sh_->isFinished() != true ) {
+			log_->write("server started!", Logger::ADD_TIME | Logger::ADD_LN);
+
 			Command* cm = mh_->getRequest();
 			if ( mh_ != nullptr ) {
 				mh_->giveAnswer(cm);
 			}//end of if 
 		}//end of while
 	}
+
+	log_->write("server shutdown...", Logger::ADD_TIME | Logger::ADD_LN);
 }//end of void Server::run()
 
 void handleSignal(int) {

@@ -22,7 +22,7 @@ class Server {
  * класс, реализующий запуск и контроль задач
  */
 public:
-	Server (MessageHandler* mh);
+	Server (MessageHandler* mh, Logger* log);
 
 	/*
 	 * получать запросы
@@ -62,6 +62,7 @@ private:
 
 	size_t numberOfThreads_;
 	MessageHandler* mh_;
+	Logger* log_;
 	MessageQueue taskQueue_;
 };//end of declaration class Server
 
