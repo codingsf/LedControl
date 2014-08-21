@@ -1,4 +1,6 @@
 #!/bin/bash
+#developer: Kuksov Pavel
+#mail: aimed.fire@gmail.com
 
 message="$CLIENT_ID"
 for (( i = 0; i < ${#commandString[@]}; i++ )); do

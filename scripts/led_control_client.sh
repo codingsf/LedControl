@@ -1,4 +1,13 @@
 #!/bin/bash
+#основной скрипт клиента
+#здесь происходит обработка пользовательского ввода и передача управления в скрипт реализующий конкретную команду
+#для скриптов, реализующих конкретную команду, данные скрит представляяет все необходимые данные:
+#SERVER_PIPE - канал сервера
+#READ_PIPE - канал откуда необходимо читать ответы сервера
+#CLIENT_ID - ID клиента
+#commandString - массив, в котором аргумент c индексом 0 передает команду, а все последующие - аргументы
+#developer: Kuksov Pavel
+#mail: aimed.fire@gmail.com
 
 showHelp () {
 	echo "Usage: led_control_client -n <server name>"
@@ -7,7 +16,16 @@ showHelp () {
 }
 
 showUsage () {
-	echo "this help text"
+	echo "support commands:"
+	echo " - set-led-state <on|off>"
+	echo " - get-led-state"
+	echo " - set-led-color <red|green|blue>"
+	echo " - get-led-color"
+	echo " - set-led-rate <0|1|2|3|4|5>"
+	echo " - get-led-rate"
+	echo " - quit"
+	echo " - usage"
+
 }
 
 if [[ -z "$1" ]] ; then
