@@ -25,7 +25,7 @@ TEST_F(ServerTest, should_finish_work_if_get_SIGINT){
 		Driver reciver;
 		CommandFactory cm("./tests_support/test1.conf", &reciver, log);
 		MessageHandler mh("led1", &cm, log);
-		Server s(&mh);
+		Server s(&mh, log);
 	pid_t pid = ::fork();
 	if (pid != 0){
 		s.run(2);
