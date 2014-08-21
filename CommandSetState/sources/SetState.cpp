@@ -1,7 +1,3 @@
-/*
- * developer: Kuksov Pavel
- * mail: aimed.fire@gmail.com
-*/
 #include "SetState.h"
 
 CommandSetState::CommandSetState(LedControl::Driver* reciver,
@@ -14,15 +10,15 @@ CommandSetState::CommandSetState(LedControl::Driver* reciver,
 
 void CommandSetState::setArguments(const std::vector<std::string>& newArguments) {
 	if ( newArguments.size() > 1 ) {
-		throw LedControl::Exception("too many arguments for command 'set-state'");
+		throw LedControl::Exception("too many arguments for command 'set-led-state'");
 	}//end of if 
 
 	if ( newArguments.empty() ) {
-		throw LedControl::Exception("command 'set-state' need one argument");
+		throw LedControl::Exception("command 'set-led-state' need one argument");
 	}//end of if 
 
 	if ( newArguments[0] != "on" && newArguments[0] != "off" ) {
-		throw LedControl::Exception("bad argument for command 'set-state'");
+		throw LedControl::Exception("bad argument for command 'set-led-state'");
 	}//end of if 
 
 	arguments_ = newArguments;

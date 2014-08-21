@@ -1,5 +1,9 @@
 #ifndef LED_CONTROL_COMMAND_SET_STATE_H_
 #define LED_CONTROL_COMMAND_SET_STATE_H_
+/*
+ * developer: Kuksov Pavel
+ * mail: aimed.fire@gmail.com
+*/
 
 #include "../../sources/Command.h"
 #include "../../sources/Driver.h"
