@@ -21,7 +21,7 @@ void CommandSetColor::setArguments(const std::vector<std::string>& newArguments)
 		throw LedControl::Exception("command 'set-led-color' need one argument");
 	}//end of if 
 
-	if ( newArguments[0] != "green" && newArguments[0] != "yellow" && newArguments[0] != "blue" ) {
+	if ( newArguments[0] != "green" && newArguments[0] != "red" && newArguments[0] != "blue" ) {
 		throw LedControl::Exception("bad argument for command 'set-led-color'");
 	}//end of if 
 
