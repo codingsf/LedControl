@@ -46,6 +46,8 @@ Command* MessageHandler::getRequest() noexcept {
 	std::fgets(buf, sizeof(buf), fifo_);
 	std::string message(buf);
 
+	log_->write("recive message: " + message, Logger::ADD_TIME | Logger::ADD_LN);
+
 	//если получили такое сообщение, то вероятнее всего работа закончена
 	if ( message == "quit\n" ) {
 		return nullptr;
@@ -113,7 +115,9 @@ void MessageHandler::giveAnswer(Command* cm) noexcept {
 	std::fputs(message.c_str(), out);
 	std::fflush(out);
 
+	log_->write("sent message: " + message + "for " + cm->getClientId(), Logger::ADD_TIME | Logger::ADD_LN);
 	delete cm;
+
 }//end of void MessageHandler::giveAnswer()
 
 bool MessageHandler::getClientIdFromMessage(const std::string& message, std::string& clientId) {
