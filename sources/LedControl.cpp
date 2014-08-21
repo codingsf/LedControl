@@ -114,7 +114,7 @@ int main(int argc, char *argv[]){
 		Driver reciver;
 		CommandFactory cm(pathToConfigFile, &reciver, log);
 		MessageHandler mh(serverName, &cm, log);
-		Server s(&mh);
+		Server s(&mh, log);
 		s.run(numberOfThreads);
 	} catch (const Exception& e) {
 		std::cerr << "Error! " << e.what() << "\n";
