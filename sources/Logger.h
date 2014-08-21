@@ -98,11 +98,13 @@ template<class T> void Logger::write(const T& message, int flags) noexcept {
 	} //end of if
 
 	if ( flags & ADD_LN ) {
-		ln = "\n";
-	}//end of if 
+		std::lock_guard<std::mutex> guard(m_);
+		logFile_ << currTime << " " << message << std::endl;
+	} else {
+		std::lock_guard<std::mutex> guard(m_);
+		logFile_ << currTime << " " << message;
+	}
 
-	std::lock_guard<std::mutex> guard(m_);
-	logFile_ << currTime << " " << message << ln;
 }//end of template<class T> void Logger::addMessage()
 
 } /* LedControl */ 
