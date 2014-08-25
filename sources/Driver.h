@@ -16,6 +16,11 @@ class Driver {
  * Данные класс разработан в расчете на то, что в него поступают уже проверенные данные
 */
 public:
+	Driver(const Driver&) = delete;
+	Driver& operator=(const Driver&) = delete;
+	Driver(Driver&&) = delete;
+	Driver& operator=(Driver&&) = delete;
+
 	Driver(); 
 
 	/*

@@ -42,6 +42,11 @@ public:
 	FRIEND_TEST(MessageHandlerTest, should_get_arguments_from_message);
 #endif
 
+	MessageHandler(const MessageHandler&) = delete;
+	MessageHandler& operator=(const MessageHandler&) = delete;
+	MessageHandler(MessageHandler&&) = delete;
+	MessageHandler& operator=(MessageHandler&&) = delete;
+
 	MessageHandler (const std::string& serverName, CommandFactory* cf, Logger* log);
 	~MessageHandler ();
 

@@ -22,6 +22,11 @@ class Server {
  * класс, реализующий запуск и контроль задач
  */
 public:
+	Server(const Server&) = delete;
+	Server& operator=(const Server&) = delete;
+	Server(Server&&) = delete;
+	Server& operator=(Server&&) = delete;
+
 	Server (MessageHandler* mh, Logger* log);
 
 	/*
